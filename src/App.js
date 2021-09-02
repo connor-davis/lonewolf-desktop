@@ -1,20 +1,33 @@
-import { Route, HashRouter as Router } from 'react-router-dom';
+/* eslint-disable react-hooks/exhaustive-deps */
 
-import ProfileGuard from './components/profileGuard';
-import React from 'react';
-import Titlebar from './components/titlebar';
+import React, { useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { HashRouter as Router } from 'react-router-dom';
+import AuthenticationPage from './pages/Authentication';
+import HomePage from './pages/Home';
+import { database, user } from './state/database';
 import { getTheme } from './state/theme.slice';
-import { useSelector } from 'react-redux';
+import { getUserInfo, setUser } from './state/user.slice';
 
 let App = () => {
+  let dispatch = useDispatch();
   let theme = useSelector(getTheme);
+  let userInfo = useSelector(getUserInfo);
+
+  useEffect(() => {
+    database.on('auth', async (_) => {
+      let username = await user.get('alias');
+      dispatch(setUser({ username }));
+    });
+
+    return () => {};
+  }, []);
 
   return (
     <Router>
       <div className={theme}>
-        <div className="flex flex-col w-screen h-screen bg-transparent dark:bg-black text-white dark:text-white select-none focus:outline-none">
-          <Titlebar title="Lone Wolf" />
-          hekk
+        <div className="bg-transparent flex-none text-white w-screen h-screen select-none focus:outline-none">
+          {userInfo.username ? <HomePage /> : <AuthenticationPage />}
         </div>
       </div>
     </Router>

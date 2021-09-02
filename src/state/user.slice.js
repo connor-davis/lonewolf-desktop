@@ -7,16 +7,16 @@ const userSlice = createSlice({
   },
   reducers: {
     setUser: (state, action) => {
-      state.info = { ...action.payload, connected: false };
+      state.info = { ...state.info, ...action.payload };
     },
-    setUserConnected: (state, action) => {
-      state.info.connected = action.payload;
+    setUserPublicKey: (state, action) => {
+      state.info = { ...state.info, publicKey: action.payload };
     },
   },
 });
 
-const { setUser, setUserConnected } = userSlice.actions;
+const { setUser, setUserPublicKey } = userSlice.actions;
 
 const getUserInfo = (state) => state.userReducer.info;
 
-export { userSlice, setUser, setUserConnected, getUserInfo };
+export { userSlice, setUser, setUserPublicKey, getUserInfo };

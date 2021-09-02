@@ -23,8 +23,8 @@ if (!fs.existsSync(path.join(process.cwd(), 'temp')))
 function createMainWindow() {
   let windowOptions = {
     width: 1280,
-    minWidth: 480,
     height: 720,
+    minWidth: 720,
     minHeight: 480,
     show: false,
     center: true,
@@ -32,6 +32,7 @@ function createMainWindow() {
     vibrancy: 'under-window',
     visualEffectState: 'active',
     transparent: true,
+    // resizable: false,
     frame: false,
     webPreferences: {
       nodeIntegration: true,
@@ -133,7 +134,9 @@ app.on('second-instance', () => {
 app.on('window-all-closed', () => {
   // on macOS it is common for applications to stay open until the user explicitly quits
   if (process.platform !== 'darwin') {
-    app.quit();
+    setTimeout(() => {
+      app.quit();
+    }, 2000);
   }
 });
 
@@ -175,9 +178,7 @@ autoUpdater.on('error', (err) => {});
 autoUpdater.on('download-progress', (progressObj) => {});
 
 autoUpdater.on('update-downloaded', (info) => {
-  setTimeout(() => {
-    autoUpdater.quitAndInstall();
-  }, 500);
+  autoUpdater.quitAndInstall();
 });
 
 let createFolders = (folders) => {
@@ -221,7 +222,7 @@ let appFolders = {
 
 createFolders(appFolders);
 
-ipcMain.on('minimize', (event) => {
+ipcMain.on('minimize', (_) => {
   getWindow(MAIN_WINDOW_ID).minimize();
 });
 
@@ -233,6 +234,14 @@ ipcMain.on('toggleMaximize', (event) => {
   event.reply('toggledMaximize', getWindow(MAIN_WINDOW_ID).isMaximized());
 });
 
-ipcMain.on('close', (event) => {
+ipcMain.on('close', (_) => {
   getWindow(MAIN_WINDOW_ID).close();
+});
+
+ipcMain.on('center', (_) => {
+  getWindow(MAIN_WINDOW_ID).center();
+});
+
+ipcMain.on('resizable', (_, value) => {
+  getWindow(MAIN_WINDOW_ID).setResizable(value);
 });

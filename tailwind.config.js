@@ -6,7 +6,7 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        transparent: 'rgba(0,0,0,0.8)',
+        transparent: 'rgba(0,0,0,0)',
         currentColor: 'currentColor',
         red: colors.red,
         black: '#181818',
