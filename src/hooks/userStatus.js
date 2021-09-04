@@ -8,7 +8,7 @@ export default function useUserStatus(publicKey) {
   const [isOnline, setIsOnline] = useState(null);
 
   useEffect(() => {
-    database.user(publicKey).get('status').on(setIsOnline);
+    database.user(publicKey).get('status').once(setIsOnline);
   }, []);
 
   return isOnline;
