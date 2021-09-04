@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Route } from 'react-router';
 import { Link, useHistory } from 'react-router-dom';
-import { database, generateCertificate, user } from '../../state/database';
+import { user } from '../../state/database';
 import AddFriendPage from './AddFriend';
 import AllFriendsPage from './AllFriends';
 import FriendRequestsPage from './FriendRequests';
