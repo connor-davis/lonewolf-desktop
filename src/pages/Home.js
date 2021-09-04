@@ -17,11 +17,11 @@ export default function HomePage() {
       .get('friendRequestsCertificate')
       .once((certificate, _) => {
         if (!certificate) {
-          generateCertificate(user.is.alias);
+          generateCertificate(user);
         }
       });
 
-    let userStatus = user.get('status');
+    let userStatus = database.user(user.is.pub);
 
     user.once((data, key) => {
       setUserInfo(data);

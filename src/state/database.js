@@ -7,16 +7,16 @@ let database = Gun('https://lonewolf-relay.seconddawn.cloud/gun');
 
 let user = database.user().recall({ sessionStorage: true });
 
-let generateCertificate = async (keyPair) => {
+let generateCertificate = async (_user) => {
   let certificate = await SEA.certify(
     ['*'],
     [{ '*': 'friendRequests' }, { '*': 'friends' }],
-    keyPair,
+    _user.pair(),
     null,
     {}
   );
 
-  database.user(keyPair.pub).get('friendRequestsCertificate').put(certificate);
+  database.user(_user.is.pub).get('friendRequestsCertificate').put(certificate);
 };
 
 export { database, user, generateCertificate };
