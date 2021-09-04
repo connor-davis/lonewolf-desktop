@@ -30,7 +30,7 @@ export default function AllFriendsPage() {
 
   return (
     <>
-      {friends.length > 0 && (
+      {friends.filter((friend) => friend.status === 'online').length > 0 && (
         <ScrollToBottom className="flex flex-col flex-1 overflow-auto p-2">
           {friends
             .filter((friend) => friend.status === 'online')
