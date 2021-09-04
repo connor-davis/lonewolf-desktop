@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { Route, Link } from 'react-router-dom';
 import Titlebar from '../components/titlebar';
 import Welcome from '../components/welcome';
-import { user } from '../state/database';
+import { database, generateCertificate, user } from '../state/database';
 import FriendsPage from './friends/Friends';
 
 import 'gun/lib/shim';
@@ -12,6 +12,15 @@ export default function HomePage() {
   let [userInfo, setUserInfo] = useState({});
 
   useEffect(() => {
+    database
+      .user(user.is.pub)
+      .get('friendRequestsCertificate')
+      .once((certificate, _) => {
+        if (!certificate) {
+          generateCertificate();
+        }
+      });
+
     let userStatus = user.get('status');
 
     user.once((data, key) => {

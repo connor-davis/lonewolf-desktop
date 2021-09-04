@@ -10,21 +10,19 @@ export default function AllFriendsPage() {
     database
       .user(user.is.pub)
       .get('friends')
+      .map()
       .once((data, _) => {
-        for (let k in data) {
-          if (k !== '_' && data[k] !== null)
-            database.user(data[k]).once((data, _) => {
-              setFriends((old) => [
-                ...old,
-                {
-                  key: k,
-                  username: data['alias'],
-                  status: data['status'],
-                  publicKey: data['pub'],
-                },
-              ]);
-            });
-        }
+        database.user(data).once((data, _) => {
+          setFriends((old) => [
+            ...old,
+            {
+              key: data,
+              username: data['alias'],
+              status: data['status'],
+              publicKey: data['pub'],
+            },
+          ]);
+        });
       });
 
     return () => {};

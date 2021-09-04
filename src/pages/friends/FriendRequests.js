@@ -1,8 +1,7 @@
-import React, { useEffect, useState } from 'react';
-import { database, user } from '../../state/database';
-import ScrollToBottom from 'react-scroll-to-bottom';
-
 import 'gun-unset';
+import React, { useEffect, useState } from 'react';
+import ScrollToBottom from 'react-scroll-to-bottom';
+import { database, user } from '../../state/database';
 
 export default function FriendRequestsPage() {
   let [friendRequests, setFriendRequests] = useState([]);
@@ -11,21 +10,19 @@ export default function FriendRequestsPage() {
     database
       .user(user.is.pub)
       .get('friendRequests')
+      .map()
       .once((data, _) => {
-        for (let k in data) {
-          if (k !== '_' && data[k] !== null)
-            database.user(data[k]).once((data, _) => {
-              setFriendRequests((old) => [
-                ...old,
-                {
-                  key: k,
-                  username: data['alias'],
-                  status: data['status'],
-                  publicKey: data['pub'],
-                },
-              ]);
-            });
-        }
+        database.user(data).once((data, _) => {
+          setFriendRequests((old) => [
+            ...old,
+            {
+              key: data,
+              username: data['alias'],
+              status: data['status'],
+              publicKey: data['pub'],
+            },
+          ]);
+        });
       });
 
     return () => {};
@@ -33,6 +30,16 @@ export default function FriendRequestsPage() {
 
   let acceptFriendRequest = (publicKey) => {
     database.user(user.is.pub).get('friends').set(publicKey);
+
+    database
+      .user(publicKey)
+      .get('friendRequestsCertificate')
+      .once((certificate, _) => {
+        database
+          .user(publicKey)
+          .get('friends')
+          .set(user.is.pub, null, { opt: { cert: certificate } });
+      });
   };
 
   let rejectFriendRequest = (key) => {

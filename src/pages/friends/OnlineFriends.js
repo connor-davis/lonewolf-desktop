@@ -1,23 +1,28 @@
-/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useEffect, useState } from 'react';
-import { useSelector } from 'react-redux';
-import FriendsList from '../../components/friends/friendList';
-import { getUserInfo } from '../../state/user.slice';
-import { database } from '../../state/database';
+import ScrollToBottom from 'react-scroll-to-bottom';
 
-export default function OnlineFriendsPage() {
-  let userInfo = useSelector(getUserInfo);
+import { database, user } from '../../state/database';
+
+export default function AllFriendsPage() {
   let [friends, setFriends] = useState([]);
 
   useEffect(() => {
     database
-      .user(userInfo.publicKey)
-      .get('friendsList')
+      .user(user.is.pub)
+      .get('friends')
       .map()
-      .once((data, key) => {
-        if (data && data.status === 'online') {
-          setFriends((old) => [...old, { username: data.username }]);
-        }
+      .once((data, _) => {
+        database.user(data).once((data, _) => {
+          setFriends((old) => [
+            ...old,
+            {
+              key: data,
+              username: data['alias'],
+              status: data['status'],
+              publicKey: data['pub'],
+            },
+          ]);
+        });
       });
 
     return () => {};
@@ -25,7 +30,27 @@ export default function OnlineFriendsPage() {
 
   return (
     <>
-      {friends.length > 0 && <FriendsList friends={friends} />}
+      {friends.length > 0 && (
+        <ScrollToBottom className="flex flex-col flex-1 overflow-auto p-2">
+          {friends
+            .filter((friend) => friend.status === 'online')
+            .map(({ username, status, publicKey, key }, index) => (
+              <div
+                key={key}
+                className="flex justify-between items-center w-full h-10 border-b border-gray-700 p-2"
+              >
+                <div className="flex items-center space-x-2">
+                  <div className="text-md text-gray-400">@{username}</div>
+                  <div
+                    className={`w-2 h-2 bg-gray-400 rounded-full ${
+                      status === 'online' && 'bg-green-600'
+                    }`}
+                  />
+                </div>
+              </div>
+            ))}
+        </ScrollToBottom>
+      )}
 
       {friends.length === 0 && (
         <div className="flex flex-col justify-center items-center w-full h-full">

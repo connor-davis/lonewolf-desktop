@@ -1,15 +1,22 @@
-import Gun from 'gun';
+import Gun, { SEA } from 'gun';
 
 import 'gun/sea';
 import 'gun/axe';
 
-let database = Gun({
-  peers: [
-    'https://lonewol-eu-day.herokuapp.com/gun',
-    'https://lonewol-eu-night.herokuapp.com/gun',
-  ],
-});
+let database = Gun();
 
 let user = database.user().recall({ sessionStorage: true });
 
-export { database, user };
+let generateCertificate = async () => {
+  let certificate = await SEA.certify(
+    ['*'],
+    [{ '*': 'friendRequests' }, { '*': 'friends' }],
+    user.pair(),
+    null,
+    {}
+  );
+
+  database.user(user.is.pub).get('friendRequestsCertificate').put(certificate);
+};
+
+export { database, user, generateCertificate };

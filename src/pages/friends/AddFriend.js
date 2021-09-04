@@ -5,7 +5,16 @@ export default function AddFriendPage() {
   let [friendPublicKey, setFriendPublicKey] = useState('');
 
   let sendFriendRequest = () => {
-    database.user(friendPublicKey).get('friendRequests').set(user.is.pub);
+    database
+      .user(friendPublicKey)
+      .get('friendRequestsCertificate')
+      .once((certificate, _) => {
+        console.log(certificate);
+        database
+          .user(friendPublicKey)
+          .get('friendRequests')
+          .set(user.is.pub, null, { opt: { cert: certificate } });
+      });
   };
 
   return (
