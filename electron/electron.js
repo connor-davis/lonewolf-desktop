@@ -59,6 +59,9 @@ function createSplashWindow() {
     frame: false,
     show: true,
     center: true,
+    vibrancy: 'under-window',
+    visualEffectState: 'active',
+    transparent: true,
     title: app.name,
   };
   let window = defineWindow('splash', windowOptions);

@@ -1,12 +1,20 @@
 {
   "name": "lone-wolf",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "LoneWolf is a peer-to-peer messenger.",
   "private": true,
   "main": "./electron.js",
   "homepage": "./",
   "repository": "git@github.com:connor-davis/dropzone.git",
   "author": "Connor Davis <19422@kloofhigh.co.za>",
+  "dependencies": {
+    "electron-updater": "^4.3.8",
+    "events": "^3.3.0",
+    "moment": "^2.29.1",
+    "ndjson": "^2.0.0",
+    "progress-stream": "^2.0.0",
+    "uuid": "^8.3.2"
+  },
   "eslintConfig": {
     "extends": "react-app"
   },

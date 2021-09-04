@@ -1,5 +1,5 @@
 import React from 'react';
-import useUserStatus from '../hooks/userStatus';
+import useUserStatus from '../../hooks/userStatus';
 
 export default function Message({ username, content }) {
   let status = useUserStatus(username);

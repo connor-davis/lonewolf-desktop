@@ -2,11 +2,13 @@
 import { useState, useEffect } from 'react';
 import { database } from '../state/database';
 
-export default function useUserStatus(alias) {
+import 'gun/sea';
+
+export default function useUserStatus(publicKey) {
   const [isOnline, setIsOnline] = useState(null);
 
   useEffect(() => {
-    database.get(alias).get('status').on(setIsOnline);
+    database.user(publicKey).get('status').on(setIsOnline);
   }, []);
 
   return isOnline;

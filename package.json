@@ -1,6 +1,6 @@
 {
   "name": "lone-wolf",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "LoneWolf is a peer-to-peer messenger.",
   "private": true,
   "main": "electron/electron.js",
@@ -13,6 +13,7 @@
     "electron-updater": "^4.3.8",
     "events": "^3.3.0",
     "gun": "^0.2020.1234",
+    "gun-unset": "^1.0.1",
     "moment": "^2.29.1",
     "node-sass": "4.14.1",
     "progress-stream": "^2.0.0",

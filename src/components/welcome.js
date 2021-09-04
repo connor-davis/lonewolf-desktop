@@ -1,12 +1,11 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React from 'react';
-import { useSelector } from 'react-redux';
 import useUserStatus from '../hooks/userStatus';
-import { getUserInfo } from '../state/user.slice';
+import { user } from '../state/database';
+import 'gun/sea';
 
 export default function Welcome() {
-  let userInfo = useSelector(getUserInfo);
-  let status = useUserStatus(userInfo.username);
+  let status = useUserStatus(user.is.pub);
 
   return (
     <div className="flex flex-col justify-center items-center w-full h-full">

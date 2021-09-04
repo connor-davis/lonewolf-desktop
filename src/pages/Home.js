@@ -1,33 +1,22 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, { useEffect, useState } from 'react';
-import { useSelector } from 'react-redux';
-import { Route } from 'react-router';
+import { Route, Link } from 'react-router-dom';
 import Titlebar from '../components/titlebar';
 import Welcome from '../components/welcome';
-import { database } from '../state/database';
-import { getUserInfo } from '../state/user.slice';
-import ScrollToBottom from 'react-scroll-to-bottom';
-import useUserStatus from '../hooks/userStatus';
-import Message from '../components/message';
+import { user } from '../state/database';
+import FriendsPage from './friends/Friends';
+
+import 'gun/lib/shim';
 
 export default function HomePage() {
-  let userInfo = useSelector(getUserInfo);
-  let [messages, setMessages] = useState([]);
-  let [message, setMessage] = useState('');
+  let [userInfo, setUserInfo] = useState({});
 
   useEffect(() => {
-    let userStatus = database.get(userInfo.username).get('status');
+    let userStatus = user.get('status');
 
-    database
-      .get('messages')
-      .map()
-      .once((data, _) => {
-        if (data)
-          setMessages((old) => [
-            ...old,
-            { username: data.username, content: data.content },
-          ]);
-      });
+    user.once((data, key) => {
+      setUserInfo(data);
+    });
 
     userStatus.put('online');
     window.onbeforeunload = () => {
@@ -40,59 +29,69 @@ export default function HomePage() {
   return (
     <div className="flex flex-col bg-black rounded-lg w-full h-full">
       <Titlebar title="Lone Wolf" />
-
       <div className="flex w-full h-full overflow-y-hidden">
         <div className="flex flex-col flex-grow flex flex-col w-1/3 lg:w-1/5">
-          <ScrollToBottom className="flex flex-col flex-1 overflow-auto">
-            {messages.map(({ content, username }) => (
-              <Message username={username} content={content} />
-            ))}
-          </ScrollToBottom>
-          <div className="flex flex-2 w-full p-2 space-x-2">
-            <input
-              className="flex justify-start items-center shadow rounded-md bg-gray-800 px-2 py-2 focus:outline-none placeholder-gray-500 text-blue-600 w-full"
-              type="text"
-              placeholder="Type a message."
-              value={message}
-              onChange={(evt) => setMessage(evt.target.value)}
-              onKeyDown={(evt) => {
-                if (evt.key.toLowerCase() === 'enter') {
-                  database
-                    .get('messages')
-                    .set({ content: message, username: userInfo.username });
-                  setMessage('');
-                }
-              }}
-            />
-            <div
-              className="flex justify-center items-center p-2 rounded-full bg-blue-600 cursor-pointer"
-              onClick={() => {
-                database
-                  .get('messages')
-                  .set({ content: message, username: userInfo.username });
-
-                setMessage('');
-              }}
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                className="h-6 w-6 transform rotate-90"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"
+          <div className="flex flex-col w-full h-full"></div>
+          <div className="flex flex-col w-full h-12 bg-gray-800 rounded-bl-lg">
+            <div className="flex justify-between items-center w-full h-full bg-black rounded-bl-lg rounded-br-xl p-2 border-t border-gray-900">
+              <div className="flex items-center space-x-1">
+                <div className="flex items-center text-xs text-gray-400 h-auto">
+                  @{userInfo.alias}
+                </div>
+                <div
+                  className={`w-2 h-2 bg-gray-400 rounded-full ${
+                    userInfo.status === 'online' && 'bg-green-600'
+                  }`}
                 />
-              </svg>
+              </div>
+              <div className="flex items-center space-x-2">
+                <Link to="/friends">
+                  <div className="flex justify-center items-center w-6 h-6 rounded-full text-gray-400 hover:text-blue-600 cursor-pointer transition duration-150 ease-in-out">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      className="h-4 w-4"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"
+                      />
+                    </svg>
+                  </div>
+                </Link>
+                <div
+                  className="flex justify-center items-center w-6 h-6 rounded-full text-gray-400 hover:text-red-600 cursor-pointer transition duration-150 ease-in-out"
+                  onClick={() => user.leave()}
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    className="h-4 w-4"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"
+                    />
+                  </svg>
+                </div>
+              </div>
             </div>
           </div>
         </div>
-        <div className="flex flex-col w-2/3 lg:w-4/5 h-full bg-gray-800 rounded-tl-xl">
+        <div className="flex flex-col w-2/3 lg:w-4/5 h-full bg-gray-800 rounded-tl-xl rounded-br-xl">
           <Route path="/" exact component={() => <Welcome />} />
+          <Route
+            path="/friends"
+            render={({ match: { url } }) => <FriendsPage url={url} />}
+          />
         </div>
       </div>
     </div>

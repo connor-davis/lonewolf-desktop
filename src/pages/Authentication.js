@@ -14,14 +14,18 @@ export default function AuthenticationPage() {
   let login = () => {
     user.auth(username, password, ({ err, soul }) => {
       if (err) setError(err);
-      else dispatch(setUserPublicKey(soul));
+      else {
+        dispatch(setUserPublicKey(soul));
+      }
     });
   };
 
   let register = () => {
     user.create(username, password, ({ err }) => {
       if (err) setError(err);
-      else login();
+      else {
+        login();
+      }
     });
   };
 
