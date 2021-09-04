@@ -17,7 +17,7 @@ export default function HomePage() {
       .get('friendRequestsCertificate')
       .once((certificate, _) => {
         if (!certificate) {
-          generateCertificate();
+          generateCertificate(user.is.alias);
         }
       });
 
