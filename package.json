@@ -99,10 +99,10 @@
   "build": {
     "appId": "tech.connordavis.lonewolf",
     "compression": "maximum",
-    "productName": "LoneWolf",
+    "productName": "Lone Wolf",
     "target": "NSIS",
     "win": {
-      "icon": "https://cdn2.iconfinder.com/data/icons/designer-skills/128/react-256.png"
+      "icon": "./public/icon.png"
     },
     "files": [
       "app/**/*",
@@ -112,6 +112,9 @@
     "nsis": {
       "allowToChangeInstallationDirectory": true,
       "oneClick": false
+    },
+    "directories": {
+      "buildResources": "public"
     }
   }
 }

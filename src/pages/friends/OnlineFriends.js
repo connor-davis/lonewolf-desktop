@@ -1,10 +1,10 @@
 import React from 'react';
 import ScrollToBottom from 'react-scroll-to-bottom';
 
-import { useFriendsList } from './friendsFunctions';
+import { useOnlineFriendsList } from './friendsFunctions';
 
 export default function AllFriendsPage() {
-  let [friends] = useFriendsList();
+  let [friends] = useOnlineFriendsList();
 
   return (
     <>

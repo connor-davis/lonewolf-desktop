@@ -41,6 +41,9 @@ function createMainWindow() {
       preload: path.join(__dirname, 'preload.js'),
     },
     title: app.name,
+    icon: IS_DEVELOPMENT
+      ? 'http://localhost:3000/icon.png'
+      : path.join(__dirname, 'build', 'icon.png'),
   };
   return createWindow(MAIN_WINDOW_ID, windowOptions);
 }

@@ -8,8 +8,6 @@ export default function FriendRequestsPage() {
   let [friendRequests, setFriendRequests] = useFriendRequestsList();
 
   let acceptFriendRequest = (key, publicKey) => {
-    console.log(publicKey);
-
     database.user(user.is.pub).get('friends').set(publicKey);
 
     database

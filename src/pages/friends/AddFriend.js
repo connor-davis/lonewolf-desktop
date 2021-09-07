@@ -4,16 +4,20 @@ import { database, user } from '../../state/database';
 export default function AddFriendPage() {
   let [friendPublicKey, setFriendPublicKey] = useState('');
 
-  let sendFriendRequest = () => {
+  let getFriendRequestsCertificate = (callback) => {
     database
       .user(friendPublicKey)
       .get('friendRequestsCertificate')
       .once((certificate, _) => {
-        database
-          .user(friendPublicKey)
-          .get('friendRequests')
-          .set(user.is.pub, null, { opt: { cert: certificate } });
+        if (certificate) callback(certificate);
       });
+  };
+
+  let sendFriendRequest = (certificate) => {
+    database
+      .user(friendPublicKey)
+      .get('friendRequests')
+      .set(user.is.pub, null, { opt: { cert: certificate } });
   };
 
   return (
@@ -37,7 +41,7 @@ export default function AddFriendPage() {
         <div className="flex justify-end items-center border-r border-t border-b border-black rounded-tr-md rounded-br-md bg-gray-800 focus:outline-none px-4 py-2 flex-none h-full">
           <div
             className="flex justify-center items-center px-6 py-2 text-sm rounded-md bg-blue-600 cursor-pointer w-full"
-            onClick={() => sendFriendRequest()}
+            onClick={() => getFriendRequestsCertificate(sendFriendRequest)}
           >
             Send Friend Request
           </div>

@@ -53,7 +53,7 @@ export default function FriendsPage() {
             </div>
             <div>Friends</div>
           </div>
-          <div className="flex items-center space-x-3">
+          <div className="flex items-center space-x-5">
             <Link to="/friends">
               <div className="text-gray-400 cursor-pointer hover:text-white transition duration-150 ease-in-out">
                 Online
@@ -119,14 +119,10 @@ export default function FriendsPage() {
       </div>
 
       <div className="flex flex-col w-full h-full">
-        <Route path="/friends" exact component={() => <OnlineFriendsPage />} />
-        <Route path="/friends/all" exact component={() => <AllFriendsPage />} />
-        <Route
-          path="/friends/requests"
-          exact
-          component={() => <FriendRequestsPage />}
-        />
-        <Route path="/friends/add" exact component={() => <AddFriendPage />} />
+        <Route path="/friends" exact component={OnlineFriendsPage} />
+        <Route path="/friends/all" exact component={AllFriendsPage} />
+        <Route path="/friends/requests" exact component={FriendRequestsPage} />
+        <Route path="/friends/add" exact component={AddFriendPage} />
       </div>
     </div>
   );
