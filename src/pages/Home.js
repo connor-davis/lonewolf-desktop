@@ -21,15 +21,15 @@ export default function HomePage() {
         }
       });
 
-    let userStatus = database.user(user.is.pub);
+    let userData = database.user(user.is.pub);
 
     user.once((data, key) => {
       setUserInfo(data);
     });
 
-    userStatus.put('online');
+    userData.get('status').put('online');
     window.onbeforeunload = () => {
-      userStatus.put('offline');
+      userData.get('status').put('offline');
       return null;
     };
     return () => {};

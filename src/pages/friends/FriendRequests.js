@@ -1,34 +1,15 @@
 import 'gun-unset';
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import ScrollToBottom from 'react-scroll-to-bottom';
 import { database, user } from '../../state/database';
+import { useFriendRequestsList } from './friendsFunctions';
 
 export default function FriendRequestsPage() {
-  let [friendRequests, setFriendRequests] = useState([]);
+  let [friendRequests, setFriendRequests] = useFriendRequestsList();
 
-  useEffect(() => {
-    database
-      .user(user.is.pub)
-      .get('friendRequests')
-      .map()
-      .once((data, _) => {
-        database.user(data).once((data, _) => {
-          setFriendRequests((old) => [
-            ...old,
-            {
-              key: data,
-              username: data['alias'],
-              status: data['status'],
-              publicKey: data['pub'],
-            },
-          ]);
-        });
-      });
+  let acceptFriendRequest = (key, publicKey) => {
+    console.log(publicKey);
 
-    return () => {};
-  }, []);
-
-  let acceptFriendRequest = (publicKey) => {
     database.user(user.is.pub).get('friends').set(publicKey);
 
     database
@@ -40,6 +21,9 @@ export default function FriendRequestsPage() {
           .get('friends')
           .set(user.is.pub, null, { opt: { cert: certificate } });
       });
+
+    database.user(user.is.pub).get('friendRequests').get(key).put(null);
+    setFriendRequests((old) => old.filter((request) => request.key !== key));
   };
 
   let rejectFriendRequest = (key) => {
@@ -51,13 +35,13 @@ export default function FriendRequestsPage() {
     <>
       {friendRequests.length > 0 && (
         <ScrollToBottom className="flex flex-col flex-1 overflow-auto p-2">
-          {friendRequests.map(({ username, status, publicKey, key }, index) => (
+          {friendRequests.map(({ alias, status, pub, key }, index) => (
             <div
               key={key}
               className="flex justify-between items-center w-full h-10 border-b border-gray-700 p-2"
             >
               <div className="flex items-center space-x-2">
-                <div className="text-md text-gray-400">@{username}</div>
+                <div className="text-md text-gray-400">@{alias}</div>
                 <div
                   className={`w-2 h-2 bg-gray-400 rounded-full ${
                     status === 'online' && 'bg-green-600'
@@ -68,7 +52,7 @@ export default function FriendRequestsPage() {
               <div className="flex items-center space-x-2">
                 <div
                   className="flex justify-center items-center w-6 h-6 rounded-full border-l border-t border-r border-b border-gray-700 text-gray-400 hover:text-green-600 cursor-pointer transition duration-150 ease-in-out"
-                  onClick={() => acceptFriendRequest(publicKey)}
+                  onClick={() => acceptFriendRequest(key, pub)}
                 >
                   <svg
                     xmlns="http://www.w3.org/2000/svg"

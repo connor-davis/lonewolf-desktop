@@ -9,7 +9,6 @@ export default function AddFriendPage() {
       .user(friendPublicKey)
       .get('friendRequestsCertificate')
       .once((certificate, _) => {
-        console.log(certificate);
         database
           .user(friendPublicKey)
           .get('friendRequests')
