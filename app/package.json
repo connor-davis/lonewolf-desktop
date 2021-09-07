@@ -1,6 +1,6 @@
 {
   "name": "lone-wolf",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "LoneWolf is a peer-to-peer messenger.",
   "private": true,
   "main": "./electron.js",

@@ -7,6 +7,7 @@ import { database, generateCertificate, user } from '../state/database';
 import FriendsPage from './friends/Friends';
 
 import 'gun/lib/shim';
+import ProfilePage from './profile/Profile';
 
 export default function HomePage() {
   let [userInfo, setUserInfo] = useState({});
@@ -43,16 +44,18 @@ export default function HomePage() {
           <div className="flex flex-col w-full h-full"></div>
           <div className="flex flex-col w-full h-12 bg-gray-800 rounded-bl-lg">
             <div className="flex justify-between items-center w-full h-full bg-black rounded-bl-lg rounded-br-xl p-2 border-t border-gray-900">
-              <div className="flex items-center space-x-1">
-                <div className="flex items-center text-xs text-gray-400 h-auto">
-                  @{userInfo.alias}
+              <Link to={`/profile/${userInfo.pub}`}>
+                <div className="flex items-center space-x-1">
+                  <div className="flex items-center text-xs text-gray-400 h-auto">
+                    @{userInfo.alias}
+                  </div>
+                  <div
+                    className={`w-2 h-2 bg-gray-400 rounded-full ${
+                      userInfo.status === 'online' && 'bg-green-600'
+                    }`}
+                  />
                 </div>
-                <div
-                  className={`w-2 h-2 bg-gray-400 rounded-full ${
-                    userInfo.status === 'online' && 'bg-green-600'
-                  }`}
-                />
-              </div>
+              </Link>
               <div className="flex items-center space-x-2">
                 <Link to="/friends">
                   <div className="flex justify-center items-center w-6 h-6 rounded-full text-gray-400 hover:text-blue-600 cursor-pointer transition duration-150 ease-in-out">
@@ -95,12 +98,13 @@ export default function HomePage() {
             </div>
           </div>
         </div>
-        <div className="flex flex-col w-2/3 lg:w-4/5 h-full bg-gray-800 rounded-tl-xl rounded-br-xl">
+        <div className="flex flex-col w-2/3 lg:w-4/5 h-full bg-gray-800 rounded-tl-xl rounded-br-lg">
           <Route path="/" exact component={() => <Welcome />} />
           <Route
             path="/friends"
             render={({ match: { url } }) => <FriendsPage url={url} />}
           />
+          <Route path="/profile/:publicKey" component={ProfilePage} />
         </div>
       </div>
     </div>
