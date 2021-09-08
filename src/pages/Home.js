@@ -37,20 +37,35 @@ export default function HomePage() {
     <div className="flex flex-col bg-black rounded-lg w-full h-full">
       <Titlebar title="Lone Wolf" />
       <div className="flex w-full h-full overflow-y-hidden">
-        <div className="flex flex-col flex-grow flex flex-col w-1/3 lg:w-1/5">
+        <div className="flex flex-col flex-none w-72">
           <div className="flex flex-col w-full h-full"></div>
           <div className="flex flex-col w-full h-12 bg-gray-800 rounded-bl-lg">
             <div className="flex justify-between items-center w-full h-full bg-black rounded-bl-lg rounded-br-xl p-2 border-t border-gray-900">
               <Link to={`/profile/${userInfo.pub}`}>
                 <div className="flex items-center space-x-1">
-                  <div className="flex items-center text-xs text-gray-400 h-auto">
-                    @{userInfo.alias}
+                  <div className="relative flex flex-none w-10 h-10 bg-black rounded-full p-1">
+                    <img
+                      className="object-cover relative rounded-full w-full h-full "
+                      src={
+                        userInfo.image ||
+                        'https://skyportal.xyz/BADvbV9BumlWmiKc1EOxgNOj-zaRr-_TOlzBw1HQzq6Zdg'
+                      }
+                      alt=""
+                    />
+                    <div
+                      className={`absolute bottom-1 right-1 border-l-2 border-t-2 border-r-2 border-b-2 border-black w-3 h-3 bg-gray-400 rounded-full ${
+                        userInfo.status === 'online' && 'bg-green-600'
+                      }`}
+                    />
                   </div>
-                  <div
-                    className={`w-2 h-2 bg-gray-400 rounded-full ${
-                      userInfo.status === 'online' && 'bg-green-600'
-                    }`}
-                  />
+                  <div className="flex flex-col">
+                    <div className="flex items-center text-xs text-gray-200 h-auto">
+                      {userInfo.userName}
+                    </div>
+                    <div className="flex items-center text-xs text-gray-400 h-auto">
+                      @{userInfo.alias}
+                    </div>
+                  </div>
                 </div>
               </Link>
               <div className="flex items-center space-x-2">
@@ -95,7 +110,7 @@ export default function HomePage() {
             </div>
           </div>
         </div>
-        <div className="flex flex-col w-2/3 lg:w-4/5 h-full bg-gray-800 rounded-tl-xl rounded-br-lg">
+        <div className="flex flex-col flex-grow h-full bg-gray-800 rounded-tl-xl rounded-br-lg">
           <Route path="/" exact component={() => <Welcome />} />
           <Route
             path="/friends"

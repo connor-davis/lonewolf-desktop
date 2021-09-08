@@ -27,7 +27,7 @@ function createMainWindow() {
   let windowOptions = {
     width: 1280,
     height: 720,
-    minWidth: 720,
+    minWidth: 900,
     minHeight: 480,
     show: false,
     center: true,

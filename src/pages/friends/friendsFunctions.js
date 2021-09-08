@@ -8,10 +8,10 @@ let useFriendsList = () => {
     database.user().open(({ pub, friends }) => {
       for (let k in friends) {
         if (friends[k] !== pub && friends)
-          database.user(friends[k]).on((data, _) => {
+          database.user(friends[k]).open((friend) => {
             setFriends((old) => [
-              ...old.filter((o) => o.pub !== data.pub),
-              { ...data, key: k },
+              ...old.filter((o) => o.pub !== friend.pub),
+              { ...friend, key: k },
             ]);
           });
       }
@@ -30,11 +30,11 @@ let useOnlineFriendsList = () => {
     database.user().open(({ pub, friends }) => {
       for (let k in friends) {
         if (friends[k] !== pub && friends[k])
-          database.user(friends[k]).on((data, _) => {
-            if (data.status === 'online')
+          database.user(friends[k]).open((friend) => {
+            if (friend.status === 'online')
               setFriends((old) => [
-                ...old.filter((o) => o.pub !== data.pub),
-                { ...data, key: k },
+                ...old.filter((o) => o.pub !== friend.pub),
+                { ...friend, key: k },
               ]);
           });
       }
@@ -53,10 +53,10 @@ let useFriendRequestsList = () => {
     database.user().open((user) => {
       for (let k in user.friendRequests) {
         if (user.friendRequests[k] !== user.pub && user.friendRequests[k])
-          database.user(user.friendRequests[k]).on((data, _) => {
+          database.user(user.friendRequests[k]).open((request) => {
             setFriendRequests((old) => [
-              ...old.filter((o) => o.pub !== data.pub),
-              { ...data, key: k },
+              ...old.filter((o) => o.pub !== request.pub),
+              { ...request, key: k },
             ]);
           });
       }
