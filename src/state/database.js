@@ -12,8 +12,8 @@ import 'zenbase/dist/main';
 let database = Gun({
   localStorage: true,
   secret: window.zenbase_key,
-  portal: 'https://skyportal.xyz',
-  debug: false,
+  portal: 'https://siasky.net',
+  debug: true,
   until: 2 * 1000,
 });
 

@@ -1,9 +1,11 @@
 /* eslint-disable react-hooks/exhaustive-deps */
+
 import React, { useEffect, useState, useRef } from 'react';
 import { database } from '../../state/database';
-import { SkynetClient } from 'skynet-js';
+
 import { CircularProgressbar, buildStyles } from 'react-circular-progressbar';
 import 'react-circular-progressbar/dist/styles.css';
+import { SkynetClient } from 'skynet-js';
 
 export default function UserProfilePage({ publicKey }) {
   let [userInfo, setUserInfo] = useState({});
@@ -35,6 +37,17 @@ export default function UserProfilePage({ publicKey }) {
     if (userInfo.image) setImage(userInfo.image);
   }, [userInfo]);
 
+  let onUploadProgress = (progress, { loaded, total }) => {
+    console.log(progress * 100);
+
+    if (progress * 100 === 100) {
+      setIsProcessing(true);
+      setUploadProgress(0);
+    } else {
+      setUploadProgress(progress * 100);
+    }
+  };
+
   let changeName = () => {
     database.user().get('userName').put(name);
   };
@@ -43,40 +56,29 @@ export default function UserProfilePage({ publicKey }) {
     database.user().get('userAbout').put(about);
   };
 
-  let changeImage = async () => {
-    let onUploadProgress = (progress, { loaded, total }) => {
-      if (progress * 100 === 100) {
-        setIsProcessing(true);
-        setUploadProgress(0);
-      } else {
-        setUploadProgress(progress * 100);
-      }
-    };
-
-    let client = new SkynetClient('https://skyportal.xyz/', {
+  let changeImage = () => {
+    let client = new SkynetClient('https://siasky.net/', {
       onUploadProgress,
     });
 
-    let file = imageFileRef.current.files[0];
+    client
+      .uploadFile(imageFileRef.current.files[0])
+      .then(async (skylink) => {
+        if (skylink) {
+          console.log('Upload successful - ' + skylink);
 
-    try {
-      const { skylink } = await client.uploadFile(file);
+          const url = await client.getSkylinkUrl(skylink.split(':')[1]);
 
-      if (skylink) {
-        console.log('Upload successful - ' + skylink);
+          if (url) {
+            setIsProcessing(false);
 
-        database
-          .user()
-          .get('image')
-          .put(`https://skyportal.xyz/${skylink.split(':')[1]}`);
+            database.user().get('image').put(url);
 
-        setImage(`https://skyportal.xyz/${skylink.split(':')[1]}`);
-
-        setIsProcessing(false);
-      }
-    } catch (error) {
-      console.log(error);
-    }
+            setImage(url);
+          }
+        }
+      })
+      .catch(console.log);
   };
 
   return (

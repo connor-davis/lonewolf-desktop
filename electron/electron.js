@@ -186,47 +186,6 @@ autoUpdater.on('update-downloaded', (info) => {
   autoUpdater.quitAndInstall();
 });
 
-let createFolders = (folders) => {
-  for (let folderIndex in folders) {
-    let folder = folders[folderIndex];
-
-    if (!fs.existsSync(`${folder.root}/${folder.name}`))
-      fs.mkdirSync(`${folder.root}/${folder.name}`);
-
-    if (folder.subFolders) createFolders(folder.subFolders);
-  }
-};
-
-let createFiles = (files) => {
-  for (let fileIndex in files) {
-    let file = files[fileIndex];
-
-    if (!fs.existsSync(`${file.rootPath}/${file.name}`))
-      fs.writeFileSync(`${file.rootPath}/${file.name}`, file.data, {
-        encoding: file.encoding,
-      });
-  }
-};
-
-let appFolders = {
-  0: {
-    root: process.cwd(),
-    name: 'userData',
-    subFolders: {
-      0: {
-        root: `${process.cwd()}/userData`,
-        name: 'zones',
-      },
-      1: {
-        root: `${process.cwd()}/userData`,
-        name: 'downloads',
-      },
-    },
-  },
-};
-
-createFolders(appFolders);
-
 ipcMain.on('minimize', (_) => {
   getWindow(MAIN_WINDOW_ID).minimize();
 });
