@@ -10,7 +10,11 @@ import 'gun/lib/shim';
 import ProfilePage from './profile/Profile';
 
 export default function HomePage() {
-  let [userInfo, setUserInfo] = useState({});
+  let [pub, setPub] = useState('');
+  let [name, setName] = useState('');
+  let [alias, setAlias] = useState('');
+  let [image, setImage] = useState('');
+  let [status, setStatus] = useState('');
 
   useEffect(() => {
     database
@@ -21,11 +25,18 @@ export default function HomePage() {
           generateCertificate(user);
         }
       });
+    return () => {};
+  }, []);
 
-    let userData = database.user(user.is.pub);
+  useEffect(() => {
+    let userData = database.user();
 
-    user.open((user) => {
-      setUserInfo(user);
+    userData.open((user) => {
+      if (user.pub) setPub(user.pub);
+      if (user.userName) setName(user.userName);
+      if (user.alias) setAlias(user.alias);
+      if (user.image) setImage(user.image);
+      if (user.status) setStatus(user.status);
     });
 
     userData.get('status').put('online');
@@ -41,29 +52,29 @@ export default function HomePage() {
           <div className="flex flex-col w-full h-full"></div>
           <div className="flex flex-col w-full h-12 bg-gray-800 rounded-bl-lg">
             <div className="flex justify-between items-center w-full h-full bg-black rounded-bl-lg rounded-br-xl p-2 border-t border-gray-900">
-              <Link to={`/profile/${userInfo.pub}`}>
+              <Link to={`/profile/${pub}`}>
                 <div className="flex items-center space-x-1">
                   <div className="relative flex flex-none w-10 h-10 bg-black rounded-full p-1">
                     <img
                       className="object-cover relative rounded-full w-full h-full "
                       src={
-                        userInfo.image ||
+                        image ||
                         'https://skyportal.xyz/BADvbV9BumlWmiKc1EOxgNOj-zaRr-_TOlzBw1HQzq6Zdg'
                       }
                       alt=""
                     />
                     <div
                       className={`absolute bottom-1 right-1 border-l-2 border-t-2 border-r-2 border-b-2 border-black w-3 h-3 bg-gray-400 rounded-full ${
-                        userInfo.status === 'online' && 'bg-green-600'
+                        status === 'online' && 'bg-green-600'
                       }`}
                     />
                   </div>
                   <div className="flex flex-col">
                     <div className="flex items-center text-xs text-gray-200 h-auto">
-                      {userInfo.userName}
+                      {name}
                     </div>
                     <div className="flex items-center text-xs text-gray-400 h-auto">
-                      @{userInfo.alias}
+                      @{alias}
                     </div>
                   </div>
                 </div>

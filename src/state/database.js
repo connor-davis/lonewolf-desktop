@@ -7,15 +7,8 @@ import 'gun/lib/radisk';
 import 'gun/lib/store';
 import 'gun/lib/rindexed';
 import 'gun/lib/shim';
-import 'zenbase/dist/main';
 
-let database = Gun({
-  localStorage: true,
-  secret: window.zenbase_key,
-  portal: 'https://siasky.net',
-  debug: true,
-  until: 2 * 1000,
-});
+let database = Gun('https://lonewolf-relay.seconddawn.cloud/gun');
 
 let user = database.user().recall({ sessionStorage: true });
 
