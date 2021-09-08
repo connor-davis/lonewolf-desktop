@@ -2,8 +2,20 @@ import Gun, { SEA } from 'gun';
 
 import 'gun/sea';
 import 'gun/axe';
+import 'gun/lib/radix';
+import 'gun/lib/radisk';
+import 'gun/lib/store';
+import 'gun/lib/rindexed';
+import 'gun/lib/shim';
+import 'zenbase/dist/main';
 
-let database = Gun('https://lonewolf-relay.seconddawn.cloud/gun');
+let database = Gun({
+  localStorage: true,
+  secret: window.zenbase_key,
+  portal: 'https://skyportal.xyz',
+  debug: false,
+  until: 2 * 1000,
+});
 
 let user = database.user().recall({ sessionStorage: true });
 

@@ -1,3 +1,6 @@
+let dotenv = require('dotenv');
+dotenv.config({ path: __dirname + '/.env' });
+
 let path = require('path');
 let { app, Menu, ipcMain, clipboard } = require('electron');
 let {
@@ -136,13 +139,9 @@ app.on('second-instance', () => {
   }
 });
 
-// quit application when all windows are closed
 app.on('window-all-closed', () => {
-  // on macOS it is common for applications to stay open until the user explicitly quits
   if (process.platform !== 'darwin') {
-    setTimeout(() => {
-      app.quit();
-    }, 2000);
+    app.quit();
   }
 });
 
@@ -240,8 +239,14 @@ ipcMain.on('toggleMaximize', (event) => {
   event.reply('toggledMaximize', getWindow(MAIN_WINDOW_ID).isMaximized());
 });
 
-ipcMain.on('close', (_) => {
+ipcMain.on('close', (event) => {
+  event.reply('setOffline');
+});
+
+ipcMain.on('offlineSet', (_) => {
+  console.log('you can close');
   getWindow(MAIN_WINDOW_ID).close();
+  app.quit();
 });
 
 ipcMain.on('center', (_) => {

@@ -12,4 +12,4 @@ window.on = (type, callback) => {
   });
 };
 
-ipcRenderer.setMaxListeners(10000);
+window.zenbase_key = process.env.zenbase_key;

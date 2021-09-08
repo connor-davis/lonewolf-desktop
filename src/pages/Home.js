@@ -14,7 +14,7 @@ export default function HomePage() {
 
   useEffect(() => {
     database
-      .user(user.is.pub)
+      .user()
       .get('friendRequestsCertificate')
       .once((certificate, _) => {
         if (!certificate) {
@@ -24,15 +24,12 @@ export default function HomePage() {
 
     let userData = database.user(user.is.pub);
 
-    user.once((data, key) => {
-      setUserInfo(data);
+    user.open((user) => {
+      setUserInfo(user);
     });
 
     userData.get('status').put('online');
-    window.onbeforeunload = () => {
-      userData.get('status').put('offline');
-      return null;
-    };
+
     return () => {};
   }, []);
 

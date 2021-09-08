@@ -11,6 +11,10 @@
     -webkit-app-region: no-drag;
   }
 
+  .transparent-black {
+    background-color: rgba(0, 0, 0, 0.5);
+  }
+
   @variants hover, focus {
     .transparent-blue {
       background-color: rgba(37, 99, 235, 0.5);
